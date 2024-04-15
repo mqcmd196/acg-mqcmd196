@@ -65,8 +65,14 @@ void draw_polygon(
         float p1x = polygon_xy[i1_vtx * 2 + 0] - x;
         float p1y = polygon_xy[i1_vtx * 2 + 1] - y;
         // write a few lines of code to compute winding number (hint: use atan2)
+        auto norm = std::sqrt(p0x * p0x + p0y * p0y);
+        auto cos = (p0x * p1x + p0y * p1y) / norm;
+        auto sin = (p0y * p1x - p0x * p1y) / norm;
+        const auto theta = std::atan2(sin, cos);
+        winding_number += theta / (2.0 * M_PI);
       }
       const int int_winding_number = int(std::round(winding_number));
+      std::cout << int_winding_number << std::endl;
       if (int_winding_number == 1 ) { // if (x,y) is inside the polygon
         img_data[ih*width + iw] = brightness;
       }
@@ -91,6 +97,27 @@ void dda_line(
   auto dx = x1 - x0;
   auto dy = y1 - y0;
   // write some code below to paint pixel on the line with color `brightness`
+  if(std::abs(dx) > std::abs(dy)){
+      if(x0 > x1){
+          std::swap(x0, x1);
+          std::swap(y0, y1);
+      }
+      auto m = dy / dx;
+      for(auto x = x0; x <= x1; x += 1){
+          auto y = y0 + m * (x - x0);
+          img_data[static_cast<int>(std::round(y)) * width + static_cast<int>(std::round(x))] = brightness;
+      }
+  }else{
+      if(y0 > y1){
+          std::swap(x0, x1);
+          std::swap(y0, y1);
+      }
+      auto m = dx / dy;
+      for(auto y = y0; y <= y1; y += 1){
+          auto x = x0 + m * (y - y0);
+          img_data[static_cast<int>(std::round(y)) * width + static_cast<int>(std::round(x))] = brightness;
+      }
+  }
 }
 
 int main() {
