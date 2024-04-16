@@ -72,7 +72,6 @@ void draw_polygon(
         winding_number += theta / (2.0 * M_PI);
       }
       const int int_winding_number = int(std::round(winding_number));
-      std::cout << int_winding_number << std::endl;
       if (int_winding_number == 1 ) { // if (x,y) is inside the polygon
         img_data[ih*width + iw] = brightness;
       }
