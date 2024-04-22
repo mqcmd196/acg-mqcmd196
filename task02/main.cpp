@@ -64,9 +64,42 @@ int number_of_intersection_ray_against_quadratic_bezier(
     const Eigen::Vector2f &ps,
     const Eigen::Vector2f &pc,
     const Eigen::Vector2f &pe) {
-  // comment out below to do the assignment
-  return number_of_intersection_ray_against_edge(org, dir, ps, pe);
-  // write some code below to find the intersection between ray and the quadratic
+    // comment out below to do the assignment
+    // return number_of_intersection_ray_against_edge(org, dir, ps, pe);
+    // write some code below to find the intersection between ray and the quadratic
+    // solve the equation below
+    // (ps*w -2*pc*w + pe*w)*t^2 + 2*(ps*w - pc*w)t + ps*w - org*w = 0
+    // where w = (-diry dirx)T
+    const auto w = Eigen::Vector2f(-dir[1], dir[0]);
+    const auto a = (ps - 2 * pc + pe).dot(w);
+    const auto b = (pc - ps).dot(w); // divide by 2
+    const auto c = (ps - org).dot(w);
+
+    // check whether the discriminant is positive
+    const auto discriminant = b * b - a * c;
+    if(discriminant < 0) return 0;
+
+    // find the roots
+    const auto sqrt_discriminant = sqrt(discriminant);
+    const auto t1 = (-b + sqrt_discriminant) / a;
+    const auto t2 = (-b - sqrt_discriminant) / a;
+
+    int count = 0;
+
+    auto check_t = [&](float t){
+        if (t > 0. && t < 1.){
+            const auto pt = (1. - t) * (1. - t) * ps + 2. * (1 - t) * t * pc + t * t * pe;
+            // check the ray
+            const auto sx = (pt[0] - org[0]) / dir[0];
+            if(sx > 0) return 1;
+        }
+        return 0;
+    };
+
+    count += check_t(t1);
+    count += check_t(t2);
+
+    return count;
 }
 
 int main() {
