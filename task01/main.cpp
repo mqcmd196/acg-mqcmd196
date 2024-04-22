@@ -104,7 +104,7 @@ void dda_line(
       auto m = dy / dx;
       for(auto x = x0; x <= x1; x += 1){
           auto y = y0 + m * (x - x0);
-          img_data[static_cast<int>(std::round(y)) * width + static_cast<int>(std::round(x))] = brightness;
+          img_data[static_cast<int>(std::floor(y)) * width + static_cast<int>(std::floor(x))] = brightness;
       }
   }else{
       if(y0 > y1){
@@ -114,7 +114,7 @@ void dda_line(
       auto m = dx / dy;
       for(auto y = y0; y <= y1; y += 1){
           auto x = x0 + m * (y - y0);
-          img_data[static_cast<int>(std::round(y)) * width + static_cast<int>(std::round(x))] = brightness;
+          img_data[static_cast<int>(std::floor(y)) * width + static_cast<int>(std::floor(x))] = brightness;
       }
   }
 }
