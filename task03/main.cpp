@@ -64,7 +64,11 @@ void draw_3d_triangle_with_texture(
       const float area2 = (r0 - s).cross(r1 - s);
       if (area0 < 0. || area1 < 0. || area2 < 0.) { continue; } // the pixel is outside the triangle (r0, r1, r2)
       Eigen::Vector3f bc = Eigen::Vector3f(area0, area1, area2) / (area0 + area1 + area2); // barycentric coordinate on screen
-      std::cout << "[1st] x:" << bc[0] << ", y:" << bc[1] << ", z:" << bc[2] << std::endl;
+      std::cout << "[q0] x: " << q0[0] << ", y: " << q0[1] << ", z: " << q0[2] << std::endl;
+//      std::cout << "[q1] x: " << q1[0] << ", y: " << q1[1] << ", z: " << q1[2] << std::endl;
+//      std::cout << "[q2] x: " << q2[0] << ", y: " << q2[1] << ", z: " << q2[2] << std::endl;
+      std::cout << "[r0] x: " << r0[0] << ", y: " << r0[1] << ", z: " << r0[2] << std::endl;
+//      std::cout << "[1st] x:" << bc[0] << ", y:" << bc[1] << ", z:" << bc[2] << std::endl;
       // `bc` gives the barycentric coordinate **on the screen** and it is distorted.
       // Compute the barycentric coordinate ***on the 3d triangle** below that gives the correct texture mapping.
       // (Hint: formulate a linear system with 4x4 coefficient matrix and solve it to get the barycentric coordinate)
@@ -94,7 +98,7 @@ void draw_3d_triangle_with_texture(
       const auto ans = coeff.inverse() * rhs;
       const auto ans3 = (ans.head<3>());
       bc = (ans3.array() + 1.) / 2.;
-      std::cout << "[2nd] x:" << bc[0] << ", y:" << bc[1] << ", z:" << bc[2] << std::endl;
+//      std::cout << "[2nd] x:" << bc[0] << ", y:" << bc[1] << ", z:" << bc[2] << std::endl;
 
       // do not change below
       auto uv = uv0 * bc[0] + uv1 * bc[1] + uv2 * bc[2]; // uv coordinate of the pixel
@@ -139,11 +143,11 @@ int main() {
   const unsigned int height_img = 300;
   std::vector<unsigned char> img_data(height_img * width_img * 3, 0); // grayscale image initialized white
   // draw first triangle connecting point 0,1,2
-//  draw_3d_triangle_with_texture(
-//      q0, q1, q2,
-//      uv0, uv1, uv2,
-//      width_img, height_img, img_data,
-//      width_tex, height_tex, img_data_tex);
+  draw_3d_triangle_with_texture(
+      q0, q1, q2,
+      uv0, uv1, uv2,
+      width_img, height_img, img_data,
+      width_tex, height_tex, img_data_tex);
   // draw second triangle connecting point 0,2,3
   draw_3d_triangle_with_texture(
       q0, q2, q3,
