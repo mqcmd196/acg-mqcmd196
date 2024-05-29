@@ -56,7 +56,14 @@ auto sample_hemisphere(
 
   // For Problem 4, write some code below to sample hemisphere with cosign weight
   // (i.e., the sampling frequency is higher at the top)
-
+  const float cos_theta = std::sqrt(unirand.x());  // cos(theta) is calculated for cosine weighted distribution
+  const float sin_theta = std::sqrt(1.f - cos_theta * cos_theta);
+  dir_loc = Eigen::Vector3f(
+      sin_theta * std::cos(phi),
+      sin_theta * std::sin(phi),
+      cos_theta
+  );
+  pdf = cos_theta / float(M_PI);
 
   // end of Problem 4. Do not modify the two lines below
   const auto dir_out = local_to_world_vector_transformation(nrm) * dir_loc; // rotate the sample (zup -> nrm)
